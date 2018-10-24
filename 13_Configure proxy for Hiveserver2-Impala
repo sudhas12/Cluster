@@ -1,0 +1,50 @@
+
+##### Configure Proxy for HiveServer2/Imapala
+* Ensure that there are at least two HiveServer2 roles running on two distinct hosts
+  * Click on Imapla Service in Cloudera Manager
+  * Click on instances
+  * If there is just 1 HiveServer2 instance, deploy a second HiveServer2 on a different host
+* Install a Proxy server on a third host and configure as a proxy for HiveServer2.
+* https://www.cloudera.com/documentation/enterprise/latest/topics/impala_proxy.html#tut_proxy
+  
+  ssh root@<proxy sever host>
+  yum install haproxy ((If specific version, haproxy-version)
+  vi /etc/haproxy/haproxy.config
+        
+        #haproxy will listen in port 10000 for hiveserver2 client requests.
+        listen hiveserver2 :10000 
+        
+        #tcp – connection mode between haproxy to hive servers
+        mode tcp 
+        
+        option tcplog
+        
+        #leastconn – requests will be sent to server with less connection
+        balance leastconn 
+
+        #server <servername> <role:master/standby> <FQDN:port>
+        
+        # Port 21000 Used to transmit commands and receive results by impala-shell and 
+        # version 1.2 of the Cloudera ODBC driver.
+        server server1 <hiveserver2 master instance> FQDN:21000
+        server server2 <hiveserver2 standby instance FQDN>:2100
+        
+        #Port 21050 Used to transmit commands and receive results by applications, such as Business Intelligence tools,
+        #using JDBC, the Beeswax query editor in Hue, and version 2.0 or higher of the Cloudera ODBC driver.
+        server server1 <hiveserver2 master instance> FQDN:21050
+        server server2 <hiveserver2 standby instance FQDN>:21050
+        
+  # Configure
+       Impala > 
+                Configuration 
+                               > Impala Daemon Default Group 
+                                       Impala Daemons Load Balancer <hadproxyserver FQDN: Port>
+                                       
+   #start the haproxy service and to start automatically during server startup.
+   Run the load balancer (on a single host, preferably one not running impalad):
+
+   sudo /usr/sbin/haproxy –f /etc/haproxy/haproxy.cfg
+   #service haproxy start
+   chkconfig haproxy on
+
+        

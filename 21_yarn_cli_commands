@@ -1,0 +1,6 @@
+# Command to get application id of all applications 
+yarn application -list -appStates ALL
+
+#Command to see application logs
+yarn logs <app_id>     (App-id can be obtained from prev command)
+Eg: yarn logs -applicationId application_1509627358496_0005

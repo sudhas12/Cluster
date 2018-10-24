@@ -1,0 +1,46 @@
+# Clodeura Director does not allow Spark 2 service by default.
+#one way is to implement a custom Script.
+# Details of script found at :
+# https://www.cloudera.com/documentation/director/latest/topics/director_using_spark2.html
+#
+# Alternate method is deploying it once CDH is deployed  using a CSD (Custom Service Descriptor)
+# https://www.cloudera.com/documentation/spark2/latest/topics/spark2_installing.html
+
+# Installing an Add On Service
+# Reference: https://www.cloudera.com/documentation/enterprise/latest/topics/cm_mc_addon_services.html#concept_kpt_spj_bn
+
+#Set the directory path for custom services in Cloudera Manager
+# Go to Administration/Settings and search for Local Descriptor Repository Path
+   Enter /opt/cloudera/csd
+   Enable Enable Local Descriptor Repository optional
+
+# Installing the parcel
+       # Open the parcel settings page:
+       # Click  in the top navigation bar or click Hosts and click the Parcels tab.
+       # Click the Configuration button.
+       # In the Remote Parcel Repository URLs list, click the addition symbol to open an additional row.
+       # (https://www.cloudera.com/documentation/spark2/latest/topics/spark2_packaging.html#packaging)
+             Enter the path to the repository. (http://archive.cloudera.com/spark2/parcels/2.1.0.cloudera1/)
+             Click Save Changes to commit the changes.
+       # Click <parcel> symbol on top right hand side. The external parcel should appear in the set of parcels available for download.
+       # Download, Distribute and activate parcel (https://www.cloudera.com/documentation/enterprise/latest/topics/cm_ig_parcels.html#concept_vwq_421_yk)
+
+# Installing the Custom Service Descriptor File
+# Download the required jar (using wget or otherwise) in /opt/clodeura/csd and change persmission to 644
+   cd /opt/cloudera/csd
+   # Download file
+   sudo wget http://archive.cloudera.com/spark2/csd/SPARK2_ON_YARN-2.1.0.cloudera1.jar
+   #Set the file ownership to cloudera-scm:cloudera-scm with permission 644.
+   sudo chown cloudera-scm:cloudera-scm SPARK2_ON_YARN-2.1.0.cloudera1.jar
+   sudo chmod 644 SPARK2_ON_YARN-2.1.0.cloudera1.jar
+   # Restart cloudera manager server
+     sudo service cloudera-scm-server restart
+
+# Restart Cloudera Manager Service
+   Restart CM Service
+
+
+# Adding Spark Service
+# Add the Spark 2 service to your cluster.
+# When configuring the assignment of role instances to hosts, add a gateway role to every host.
+# The History Server port is 18089 instead of the usual 18088.

@@ -1,0 +1,26 @@
+#Install Maven (redhat/centos linux machines)
+yum install maven
+
+#install git (red hat/centos  linux machines
+yum install git
+#Alternatively downlaod tar.gz file and unpack using tar xvzf <tar.gz fiel name>
+
+# Install Java 8. 
+#Set up JAVA_HOME & add to Path
+export JAVA_HOME=<full path to JDK Directory>
+echo $JAVA_HOME
+export PATH=$JAVA_HOME/bin:$PATH
+echo $PATH
+
+#Adding Maven to PATH
+export PATH=<Path/to/apache-maven-3.5.0/bin:$PATH
+
+#Clone a repo. Clone the repository located at <repo> into the folder called <directory>! on the local machine.
+git clone <repo> <directory>
+
+#Build repo on local repo directory
+cd <repo directory>
+mvn install
+
+### CURL command to extract deployment information from cluster
+curl -u admin:admin http://localhost:7180/api/v#/cm/deployment?view=export_redacted > /path/to/confg-export.json

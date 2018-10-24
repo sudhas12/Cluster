@@ -1,0 +1,64 @@
+#####  Add Sentry Service
+
+1. Disable Hive Impersonation
+*    CM – 
+          Hive – 
+               Configuration – 
+                               Category:Main – 
+                                               HiveServer2      Enable Impersonation  
+                                                                 Uncheck the HiveServer2 Enable Impersonation property – 
+                                                                save changes. 
+                                                                
+2. Change ownership and permissions on /user/hive/warehouse HDFS directory
+   hdfs dfs -chown hive:hive /user/hive/warehouse
+   hdfs dfs -chmod 771 /user/hive/warehouse
+   
+3. Disable using Sentry Policy files in Hive
+  CM – 
+       Hive – 
+              configuration – 
+                             search ‘sentry’ –
+                                               uncheck “Enable Sentry Authorization using Policy Files” – 
+                                               save changes.
+ 
+ 4.  Disable using Sentry Policy files in Impala
+  CM – 
+       Impala – 
+              configuration – 
+                             search ‘sentry’ –
+                                               uncheck “Enable Sentry Authorization using Policy Files” – 
+                                               save changes.
+ 
+ 5. Enable Hive user to submit jobs
+    CM – 
+         YARN – 
+              Configuration -
+                              search ‘Allowed system users’
+                                                             Add hive user if not already present.
+                                                            Save changes.
+
+6. Install Sentry as a service
+     CM – 
+          Cluster dropdown – 
+                            add service – 
+                                        select Sentry – 
+                                                    continue
+                                                    - Select role assignments for Sentry service and gateway
+                                                    - Enter DB detaisl (or choose embeddedDB)
+                                                    – Finish
+                                                    - Confirm Sentry service is running.
+
+7. Configure Sentry Service by enabling Sentry in Hive, Impala, and Hue
+    CM – 
+          Hive – 
+                 configuration – 
+                                 search ‘sentry’ – 
+                                                  Enable Sentry service
+                                                  
+8. Repeat for Impala 
+
+9. Repeat for Hue
+
+10. Add hive,hue and impala groups to Sentry Admin groups
+
+

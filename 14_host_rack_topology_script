@@ -1,0 +1,33 @@
+#!/bin/bash 
+# CM - host list as parameters ($#)
+while [ $# -gt 0 ] ; do  
+#set nodeArg = hostname
+  nodeArg=$1
+# read input file - (exec <filename command redirects stdin to a file.)  
+  exec< topology.data 
+  result="" 
+  //read input line by line.
+  while read line ; do
+    ar=( $line ) 
+    #if first Arg matches hostname
+    if [ "${ar[0]}" = "$nodeArg" ] ; then
+    # host rack =result
+      result="${ar[1]}"
+    fi
+  done 
+  shift 
+  if [ -z "$result" ] ; then
+  #output rack for host
+    echo -n "/default/rack "
+  else
+    echo -n "$result "
+  fi
+done 
+
+#Contents of topology input file 
+* cat topology.data 
+    master     /rack1
+    master2    /rack2
+    worker1    /rack3
+    worker2    /rack3
+    worker3    /rack2

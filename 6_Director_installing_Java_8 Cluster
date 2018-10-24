@@ -1,0 +1,49 @@
+# Cloudera Director install does not include a Spark Service install.
+# Spark has to added a separate service after deploying CDH using CSDs.
+# Spark 2 and above requires Java 8 (1.8). By default Cloudera Director installs Java 1.7.
+# This can be overriden during CM and CDH deploy by director in two ways:
+                   1. Modifying the director config file directly
+                   2. By using the Director API
+#
+#Link below shows the process for deploying a Java 8 cluster through director.
+# This cannot be done using Web UI in Director 5.6 and we have to use a config file.
+# https://www.cloudera.com/documentation/director/latest/topics/director_create_java_8_clusters.html
+#
+# Director configuration file
+# https://www.cloudera.com/documentation/director/1-1-x/topics/director_cluster_config.html
+
+# In case, Web UI is being used to deploy CDH, the following are the steps for upgrading to Java 8.
+# First, download the Java 8 Jar file and copy to /usr/java
+  https://www.cloudera.com/documentation/enterprise/5-10-x/topics/cdh_cm_upgrading_to_jdk8.html
+
+# Stop the Cloudera Management Service.
+# Stop all clusters.
+# Stop all Cloudera Manager Agents.
+# Stop the Cloudera Manager Server.
+# Clean up existing Java versions (this is optional)
+# In the Cloudera Manager Server host and each cluster host:
+# https://www.cloudera.com/documentation/enterprise/5-10-x/topics/cdh_ig_jdk_installation.html
+# Install the same version of the Oracle JDK on each host.
+# Install the JDK in /usr/java/jdk-version.
+# sudo yum install wget
+* Copy the download link of jdk-8u102-linux-x64.rpm and wget it.
+# Go to http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html and copy teh link . The link below may not work
+    wget --header "Cookie: oraclelicense=accept-securebackup-cookie"
+  http://download.oracle.com/otn-pub/java/jdk/8u102-b14/jdk-8u102-linux-x64.rpm
+* Install with yum localinstall:
+      sudo yum localinstall jdk-8u144-linux-x64.rpm
+* Alternatively, Download the .tar.gz file for one of the supported versions of the Oracle JDK from Java SE 8 Downloads or Java SE 7 Downloads.
+* Extract the JDK to /usr/java/jdk-version; for example /usr/java/jdk.1.7.0_nn or /usr/java/jdk.1.8.0_nn, where nn is a supported version.
+Set JAVA_HOME to the directory where the JDK is installed. Add the following line to the specified files:
+export JAVA_HOME=/usr/java/jdk.1.8.0_nn
+Cloudera Manager Server host: /etc/default/cloudera-scm-server.
+#This affects only the Cloudera Manager Server process, and does not affect the Cloudera Management Service roles.you can use
+# Use instructions below to Configure a Custom Java Home Location.
+# This change affects all CDH processes and Cloudera Management Service roles in the cluster.
+   Open the Cloudera Manager Admin Console.
+   In the main navigation bar, click the Hosts tab and optionally click a specific host link.
+   Click the Configuration tab.
+   Select Category > Advanced.
+   Set the Java Home Directory property to the custom location.
+   Click Save Changes.
+   Restart all services.

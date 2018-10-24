@@ -1,0 +1,15 @@
+### Map intermediate data compression:
+hadoop jar hadoop-examples-.jar sort "-Dmapreduce.compress.map.output=true"
+"-Dmapreduce.map.output.compression.codec=org.apache.hadoop.io.compress.GzipCodec"
+
+### Mapreduce output compression
+hadoop jar hadoop-examples-.jar sort "-Dmapreduce.output.compress=true"
+"-Dmapreduce.output.compression.codec=org.apache.hadoop.io.compress.GzipCodec"
+-outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text input output
+
+
+### Specify a pool name in Yarn Mapreduce jobs
+hadoop jar mapreduce.jar –D mapreduce.job.queue.name=<pool name>
+
+
+

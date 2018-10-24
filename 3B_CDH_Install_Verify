@@ -1,0 +1,35 @@
+* First step is to verify if cluster is installed 
+* Verify HDFS
+hdfs dfs -ls 
+hdfs dfs -mkdir /user/user1
+hdfs dfs -chown user1:user1 /user/user1
+
+
+Next verify a Hadoop pi works
+https://www.cloudera.com/documentation/enterprise/latest/topics/cm_ig_testing_the_install.html
+
+Run the Hadoop PiEstimator example using one of the following commands:
+For Parcel installation - 
+sudo -u hdfs hadoop jar /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 10 100
+
+With	Cloudera	Manager	managed	clusters,	the	cloudera-manager-agent
+service	on	each	cluster	node manages	starting	and	stopping the	deployed	
+Hadoop	daemons. 
+
+sudo jps
+
+The	Hadoop	daemons	run	as	Java	processes.	You	should	see	the	NodeManager,	
+NameNode,	and	DataNode	processes	running with above command
+
+
+You	will see	details	about	the	process.
+If	you	grep	for	DATANODE	or	NODEMANAGER	you	will	see	details	on	those	
+processes.		Grep	for	“cloudera” to	see	all	CDH	and	Cloudera	Manager	processes	
+currently	running	on	the	machine.
+
+Another way to verify is to put soem data into cluster
+
+cd $home
+vi test.txt (add some data and save file)
+hdfs dfs -put test.txt /tmp
+hdfs dfs -ls  /tmp

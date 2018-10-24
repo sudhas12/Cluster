@@ -1,0 +1,21 @@
+#### Pre-Reuqisites - TLS/SSL, Kerberos enabed. KMS/KTS services installed
+# sudo -u hdfs is not included in the commands below. This is because it is not required if
+# Kerberos is enabled on your cluster. However, need to have Kerberos credentials for the HDFS
+# super user in order to successfully run these commands
+
+###Create a HDFS Encryption key
+# if kerberos is enabled only a user with admin privileges in KTS  can create a key. hdfs does not work
+hadoop key create <hdfs_encrypt_key>
+
+#### Create an empty encryption zone directory
+# if kerberos is enabled, make sure kerberos principal is hdfs<servername> (kinit hdfs)
+hdfs dfs -mkdir /encryption_zone_name
+
+#### Make the directory an encryption zone.
+# if kerberos is enabled, make sure kerberos principal is hdfs (kinit hdfs)
+hdfs crypto -createZone -keyName <hdfs_encrypt_key> -path </path/to/encryption_zone_name>
+
+#### Verify encryption zone is created correctly by listing the encryption zone and keyname
+# if kerberos is enabled, make sure kerberos principal is hdfs/<servername> (kinit hdfs)
+# Note: Command is case sensitive
+hdfs crypto -listZones

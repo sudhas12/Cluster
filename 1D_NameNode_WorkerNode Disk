@@ -1,0 +1,18 @@
+http://blog.cloudera.com/blog/2013/08/how-to-select-the-right-hardware-for-your-new-hadoop-cluster/
+
+Recommended specifications for NameNode/JobTracker/Standby NameNode nodes. 
+The drive count will fluctuate depending on the amount of redundancy:
+
+4–6 1TB hard disks in a JBOD configuration (1 for the OS, 2 for the FS image [RAID 1], 1 for Apache ZooKeeper, and 1 for Journal node)
+2 quad-/hex-/octo-core CPUs, running at least 2-2.5GHz
+64-128GB of RAM
+Bonded Gigabit Ethernet or 10Gigabit Ethernet
+
+Recommended specifications for DataNode/TaskTrackers in a balanced Hadoop cluster:
+
+12-24 1-4TB hard disks in a JBOD (Just a Bunch Of Disks) configuration
+2 quad-/hex-/octo-core CPUs, running at least 2-2.5GHz
+64-512GB of RAM
+Bonded Gigabit Ethernet or 10Gigabit Ethernet (the more storage density, the higher the network throughput needed)
+
+

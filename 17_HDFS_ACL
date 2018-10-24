@@ -1,0 +1,36 @@
+#####Enable HDFS ACLS
+
+#Enabling ACL for users is a two step process
+####Enable ACL for HDFS Using Cloudera Manager
+
+Go to the CM – HDFS service.
+Click the Configuration tab.
+Select Scope > Service_name (Service-Wide)
+Locate the Enable Access Control Lists property and select its checkbox to enable HDFS ACLs.
+Click Save Changes to commit the change
+Restart the services
+
+#####Create user and group ACLs
+hdfs dfs -setfacl [-R] [-b|-k -m|-x <acl_spec> <path>]|[--set <acl_spec> <path>]
+
+<!-- COMMAND OPTIONS
+<path>: Path to the file or directory for which ACLs should be set.
+-R: Use this option to recursively list ACLs for all files and directories.
+-b: Revoke all permissions except the base ACLs for user, groups and others.
+-k: Remove the default ACL.
+-m: Add new permissions to the ACL with this option. Does not affect existing permissions.
+-x: Remove only the ACL specified.
+<acl_spec>: Comma-separated list of ACL permissions.
+--set: Use this option to completely replace the existing ACL for the path specified. 
+       Previous ACL entries will no longer apply.
+-->
+
+##### To give user bootcamper4 read, write permission over /user/bootcamper3/testfile ###
+hdfs dfs -setfacl -m user:bootcamper4:rw- /user/bootcamper/testfile
+
+### To remove user bootcamper4 ACL entry for /user/bootcamper4/testfile ###
+hdfs dfs -setfacl -x user:bootcamper4 /user/bootcamper4/testfile
+
+
+####Get file access control lists (ACLs)
+hdfs dfs -getfacls -R /

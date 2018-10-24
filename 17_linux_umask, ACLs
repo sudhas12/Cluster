@@ -1,0 +1,184 @@
+##### linux permissions and umask
+
+https://www.computerhope.com/unix/uumask.htm
+
+Specifying the File Creation Mask Using Numeric Representation
+
+The file creation mask can also be represented numerically, using octal values (the digits from 0 to 7). When using octal numeric representation, certain numbers represent certain permissions, and these numbers are added or subtracted from each other to represent the final, combined permissions value. Specifically, the numbers 1, 2, and 4 represent the following permissions:
+number	permission
+
+4	read
+2	write
+1	execute
+
+These numbers are used because any combination of these three numbers will be unique. The following table illustrates their unique combinations:
+read value +	write value +	execute value =	combined value:	symbolic equivalent:
+0	0	0	0	 
+0	0	1	1	x
+0	2	0	2	w
+0	2	1	3	wx
+4	0	0	4	r
+4	0	1	5	rx
+4	2	0	6	rw
+4	2	1	7	rwx
+
+For each class of user, one digit can be used to represent their permissions; using the example above, we could represent the symbolic permission of rwxr-xr-- using the three-digit octal number 754. The order of the digits is always the same: User, Group, Other.
+The Other Permission Digit
+
+In octal representations of file permissions, there are actually four digits. The three important digits we've discussed are the last three digits. The first digit is a special file permission indicator, and for the purposes of this discussion can be considered always to be zero. So from here on out, when we discuss file permission 777, it may also be referred to as 0777.
+So How Does The Umask Actually Work?
+
+The umask masks permissions by restricting them by a certain value.
+Essentially, each digit of the umask is "subtracted" from the OS's default value to arrive at the default value that you define. It's not really subtraction; technically, the mask is negated (its bitwise compliment is taken) and this value is then applied to the default permissions using a logical AND operation. The result is that the umask tells the operating system which permission bits to "turn off" when it creates a file. So it's not really subtraction, but it's a similar concept, and thinking of it as subtraction can help to understand it.
+In Linux, the default permissions value is 666 for a regular file, and 777 for a directory. When creating a new file or directory, the kernel takes this default value, "subtracts" the umask value, and gives the new files the resulting permissions.
+This table shows how each digit of the umask value affects new file and directory permissions:
+umask digit	resulting default file permissions	resulting default directory permissions
+0	rw	rwx
+1	rw	rwx
+2	r	rx
+3	r	r
+4	w	wx
+5	w	w
+6	x	x
+7	(no permission allowed)	(no permission allowed)
+So if our umask value is 022, then any new files will, by default, have the permissions 644 (666 - 022). Likewise, any new directories will, by default, be created with the permissions 755 (777 - 022).
+umask examples
+
+To view your system's current umask value, enter the command:
+umask
+which will return your system's umask as a four-digit octal number, for example:
+0002
+Again, the first zero is a special permission digit and can be ignored; for our purposes, 0002 is the same as 002.
+To view this as a symbolic representation, use the -S flag:
+umask -S
+Which will return the same value symbolically, for example:
+u=rwx,g=rwx,o=rx
+where u stands for user, g stands for group, and o stands for other. This is telling us the So if we create a new file, it will have the default permissions 664, which is 666 (the default permissions for files) masked by 002 (our umask value).
+Let's test this by creating a new file with the touch command:
+touch testfile
+And now let's get a directory listing for that file:
+ls -l testfile
+-rw-rw-r-- 1 myusername myusername 0 Jan 7 14:29 testfile
+As expected, the new file has permissions -rw-rw-r--, or 0664: The owner and group may read or write the file, and others may only read it.
+Now let's change the umask. To set a umask of 022, use the command:
+umask 022
+This is the same as running umask 0022; if you specify only three digits, the first digit will be assumed to be zero. Let's verify that the change took place:
+umask
+0022
+And now let's create a new file:
+touch testfile2
+And now let's view its directory listing, along with the first file we created, using the asterisk wildcard ("*") to view all files whose name start with "testfile":
+ls -l testfile*
+-rw-rw-r-- 1 myusername myusername 0 Jan  7 14:29 testfile
+-rw-r--r-- 1 myusername myusername 0 Jan  7 14:39 testfile2
+As you can see, testfile2 has the permissions 644.
+Here are some other example umask commands:
+umask a+r
+Sets the mask so that new files will allow all users to read them; other permissions will be unchanged from the default.
+umask a-x
+
+Sets the mask so that new files will not initially be executable by any user; other default permissions unchanged from defaults.
+umask u=rw,go=
+
+Sets the mask so that new files will be readable and writable by the user who owns the file, but may not be executed; group members and others will have no permissions to access the file.
+umask 777
+Make new files inaccessible to everyone - no one can read, write, or execute them.
+umask 000
+Make new files completely accessible (read, write, and execute) to absolutely everyone. However, this is a bad idea. Don't do this.
+
+Why we need ACLs ?
+https://www.thegeekdiary.com/unix-linux-access-control-lists-acls-basics/
+https://docs.oracle.com/cd/E19455-01/805-7229/6j6q8svdb/index.html
+
+Every file on any UNIX file will have a owner/group and set of permissions. Imagine a case when multiple users need 
+access to the same file and the users are from different groups. The file access control lists (FACLs) or simply 
+ACLs are the list of additional user/groups and their permission to the file.
+
+How to know when a file has ACL attached to it
+It is very easy to know when a file has a attached ACL to it. ls -l command would produce a output as show below.
+
+# ls -l
+-rw-r--r-+ 1   root   root  0  Sep  19  14:41  file
+
+Note the + sign at the end of the permissions. This confirms that the file has an ACL attached to it.
+
+# getfacl /tmp/test
+# file: test
+# owner: root
+# group: root
+user::rw-
+user:john:rw-
+user:sam:rwx
+group::r--
+mask::rwx
+other:---
+
+Note the + sign at the end of the permissions. This confirms that the file has an ACL attached to it.
+
+Notice the 3 different user: lines. The first line lists the standard file permissions of the owner of the file. The 2 other 
+two user permissions are the individual permission for the user john and sam. The mask field here only applies to the 
+additional permissions we have given to the user and groups. If the mask is set to rwx the read, write and execute 
+and execute permissions will be granted to additional user/groups. If the mask is set to r-x, the write permission
+will not be granted to additional user/groups.In general, DO NOT set mask to anything other than rwx. 
+The mask value doe not affect the standard UNIX user/group/others permissions.
+
+Creating and Managing FACLs
+The setfacl command is used to set ACL on the given file. To give a rw access to user john on the file /tmp/test :
+
+# setfacl -m u:john:rw /tmp/test
+The -m option tells setfacl to modify ACLs on the file(s) mentioned in command line. Instead of user john we can have a group to have a specific permission on the file :
+
+# setfacl -m g:accounts:rw /tmp/test
+FACLs for multiple user and groups can also be set with single command :
+
+# setfacl -m u:john:rw,g:accounts:rwx /tmp/test
+
+Default FACLs on directories
+Default ACLs are only created on directories. When you set default ACLs on directories, any files created within that directory will also have that default FACL assigned automatically.
+
+To create a default FACL on a directory :
+
+# setfacl -m default:u:john:rw /accounts
+# getfacl accounts/
+# file: accounts/
+# owner: root
+# group: root
+user::rwx
+group::r-x
+other::r-x
+default:user::rwx
+default:user:john:rw-
+default:group::r-x
+default:mask::rwx
+default:other::r-x
+Now create a new file in the accounts directory and list the FACL on the file :
+
+# touch /accounts/test
+# getfacl test
+# file: test
+# owner: root
+# group: root
+user::rw-
+user:john:rw-
+group::r-x			#effective:r--
+mask::rw-
+other::r--
+Removing FACLs
+To remove FACL, use the setfacl command with -x option :
+
+# setfacl -x u:john /tmp/test
+The above command removes the ACL for the user john on the file /tmp/test. The ACLs for other user/groups if any remains unaffected.
+
+To remove all ACLs associated to a file use the -b option with setfacl :
+
+# setfacl -b /tmp/test
+Backing up the FACLs
+Many a times, the backup software may not copy the metadata related to the FACL on the files. In that case you may want to backup the FACL information on the files. Now, the FACL on all the files in a directory (including all sub directories) can be copied in a single file.
+
+# cd /accounts
+# getfacl -R * > accounts_facl        ( -R -> recursive )
+Restoring the FACLs
+When you restore the files in /accounts directory, you would have to restore the FACLs associated with the files in that direcotry. TO do that use the FACL backup file accounts_facl along with the –restore option :
+
+# setfacl --restore=accounts_facl
+
