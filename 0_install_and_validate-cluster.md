@@ -101,20 +101,20 @@ CPU Scaling is configurable and defaults commonly to favor power saving over per
 Please set scaling governors to performance, which means running the CPU at maximum frequency.  To do so run `cpufreq-set -r -g performance` OR edit /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor and set the content to 'performance'
 
 
-# add these to /etc/sysctl.conf
-# Disable response to broadcasts.
+## add these to /etc/sysctl.conf
+## Disable response to broadcasts.
 net.ipv4.icmp_echo_ignore_broadcasts = 1
-# enable route verification on all interfaces
+## enable route verification on all interfaces
 net.ipv4.conf.all.rp_filter = 1
-# enable ipV6 forwarding
+## enable ipV6 forwarding
 #net.ipv6.conf.all.forwarding = 1
-# increase the number of possible inotify(7) watches
+## increase the number of possible inotify(7) watches
 fs.inotify.max_user_watches = 65536
-# avoid deleting secondary IPs on deleting the primary IP
+## avoid deleting secondary IPs on deleting the primary IP
 net.ipv4.conf.default.promote_secondaries = 1
 net.ipv4.conf.all.promote_secondaries = 1
-# Hadoop
-# arp_filter - With arp_filter set to 1, the kernel only answers to an ARP request if it matches its own IP address.
+## Hadoop
+## arp_filter - With arp_filter set to 1, the kernel only answers to an ARP request if it matches its own IP address.
 net.ipv4.conf.all.arp_filter = 1
 
 # the percentage of system memory that can be filled with “dirty” pages — memory pages that still need to be written to disk
