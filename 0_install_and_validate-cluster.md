@@ -50,7 +50,7 @@ echo 1 > /proc/sys/vm/swappiness
  ```
  free -h
  ```
-#### check rc.local
+### check rc.local
 - [ ]  check THP 
 
  > ```
@@ -66,7 +66,7 @@ echo 1 > /proc/sys/vm/swappiness
  - [ ]  check SELINUX
 
 
-#### Optional network performance improvements that could be made
+## Optional network performance improvements that could be made
  - [ ]  Receive Packet Steering – can help to offload  packet processing. Helps to prevent the hardware queue of a single network interface card from becoming a bottleneck in network traffic.
  >  https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/network-rps.html
  > `echo “7f” > /sys/devices/????/net/eth0/queues/rx-0/rps_cpus`
@@ -78,7 +78,7 @@ echo 1 > /proc/sys/vm/swappiness
 echo "1" > /proc/sys/net/ipv4/tcp_low_latency
 ```
 
-### 3.    Validate network
+## 3.    Validate network
 
  - [ ]  cat /etc/resolv.conf
  - [ ]  cat /etc/nsswitch.conf | grep hosts:
@@ -117,8 +117,8 @@ net.ipv4.conf.all.promote_secondaries = 1
 ## arp_filter - With arp_filter set to 1, the kernel only answers to an ARP request if it matches its own IP address.
 net.ipv4.conf.all.arp_filter = 1
 
-# the percentage of system memory that can be filled with “dirty” pages — memory pages that still need to be written to disk
-# before the pdflush/flush/kdmflush background processes kick in to write it to disk. below setting is 1%
+## the percentage of system memory that can be filled with “dirty” pages — memory pages that still need to be written to disk
+## before the pdflush/flush/kdmflush background processes kick in to write it to disk. below setting is 1%
 vm.dirty_background_ratio = 1
 
 #Heuristic overcommit handling. Obvious overcommits of address space are refused. Used for a typical system. It
