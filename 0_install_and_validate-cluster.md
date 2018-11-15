@@ -147,11 +147,11 @@ net.ipv4.tcp_rmem = 4096 87380 16777216
 net.ipv4.tcp_wmem = 4096 65536 16777216
 
 
-# man 7 tcp
-# This parameter controls TCP Packetization-Layer Path MTU Discovery. The following values may be assigned to the file:
-# 0 Disabled
-# 1 Disabled by default, enabled when an ICMP black hole detected
-# 2 Always enabled, use initial MSS of tcp_base_mss.
+### man 7 tcp
+### This parameter controls TCP Packetization-Layer Path MTU Discovery. The following values may be assigned to the file:
+### 0 Disabled
+### 1 Disabled by default, enabled when an ICMP black hole detected
+### 2 Always enabled, use initial MSS of tcp_base_mss.
 net.ipv4.tcp_mtu_probing=1
 
  >     NOTE: Consider running a DNS caching server (or more than one) inside the cluster for performance reasons.
@@ -306,7 +306,7 @@ systemctl daemon-reload$ systemctl start rngd$ systemctl enable rngd
 
  - [ ] Check that yarn log aggregation is enabled.
 
-##    Benchmark/Smoketest
+###    Benchmark/Smoketest
 
 ###    1.    Teragen
     ```
